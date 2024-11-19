@@ -9,20 +9,28 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final int REQUEST_CALL_PERMISSION = 2;
     private static final int REQUEST_LOCATION_PERMISSION = 3;
@@ -30,16 +38,48 @@ public class MainActivity extends AppCompatActivity {
     private String emergencyContact = "+917025185532"; // Single emergency contact for sosButton2
     private String message = "This is an SOS message. I need help!";
     private FusedLocationProviderClient fusedLocationClient;
+    private DrawerLayout drawerLayout;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+
+
+
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ImageButton menuButton = findViewById(R.id.menu_button);
+        menuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.nav_view);
+
         ImageButton sosButton = findViewById(R.id.sos_button);
-        ImageButton sosButton2 = findViewById(R.id.second_button);
+        ImageButton sosButton2 = findViewById(R.id.sos_button2);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close
+        );
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
+        // Set the NavigationView's item selected listener
+        navigationView.setNavigationItemSelectedListener(this);
 
         // Set the first button's functionality to contact all numbers in phoneNumbers
         if (sosButton != null) {
@@ -61,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
 
     private void performSOSActionAllContacts() {
         if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
@@ -185,4 +226,18 @@ public class MainActivity extends AppCompatActivity {
             }
  }
 }
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.home) {
+            // Handle item 1 click
+        } else if (id == R.id.add_contact) {
+            // Handle item 2 click
+        } // ... handle other menu items ...
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }

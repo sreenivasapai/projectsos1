@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <!-- Home Item -->
+        <item
+            android:id="@+id/home"
+            android:title="@string/title_home"
+            android:checked="true"/>
+
+        <!-- Add Contact Item -->
+        <item
+            android:id="@+id/add_contact"
+            android:title="@string/title_add_contact" />
+
+        <!-- Settings Item -->
+        <item
+            android:id="@+id/settings"
+            android:title="@string/title_settings" />
+
+        <!-- Edit Profile Item -->
+        <item
+            android:id="@+id/edit_profile"
+            android:title="@string/title_edit_profile" />
+
+    </group>
+</menu>

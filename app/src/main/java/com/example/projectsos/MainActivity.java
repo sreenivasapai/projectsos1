@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CALL_PERMISSION = 2;
     private static final int REQUEST_LOCATION_PERMISSION = 3;
     private String[] phoneNumbers = {"+916282237900", "+917025185532", "+918714733600", "+918589078474", "+919947640096"};
-    private String emergencyContact = "+917025195532"; // Single emergency contact for sosButton2
+    private String emergencyContact = "+917025185532"; // Single emergency contact for sosButton2
     private String message = "This is an SOS message. I need help!";
     private FusedLocationProviderClient fusedLocationClient;
 

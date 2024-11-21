@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private NavigationView navigationView;
+
 
 
 
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements
         // Set the NavigationView's item selected listener
         navigationView.setNavigationItemSelectedListener(this);
 
+
         // Set the first button's functionality to contact all numbers in phoneNumbers
         if (sosButton != null) {
             sosButton.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +93,12 @@ public class MainActivity extends AppCompatActivity implements
                     performSOSActionAllContacts();
                 }
             });
+            View headerView = navigationView.getHeaderView(0);
+            ImageView profileLogo = headerView.findViewById(R.id.profile_logo);
+            profileLogo.setImageResource(R.drawable.logo);
+
+            TextView profileNameTextView = headerView.findViewById(R.id.profile_name);
+            profileNameTextView.setText("Sreenivasa Pai");
         }
 
         // Set the second button's functionality to contact only the emergency contact
@@ -240,4 +250,7 @@ public class MainActivity extends AppCompatActivity implements
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+
 }

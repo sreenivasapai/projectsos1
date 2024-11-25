@@ -6,28 +6,7 @@
     android:padding="16dp"
     android:gravity="bottom">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="34dp"
-        android:text="@string/app_name"
-        android:textSize="19sp"
-        android:textColor="#FF0000"
-        android:fontFamily="@font/cinematic_font_family" />
-    <ImageView
-        android:id="@+id/profile_logo"
-        android:layout_width="72dp"
-        android:layout_height="103dp"
-        android:src="@drawable/logo" />
 
 
-    <TextView
-        android:id="@+id/profile_name"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:text="@string/profile_name"
-        android:textSize="18sp" />
+
 </LinearLayout>

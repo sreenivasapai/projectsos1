@@ -11,4 +11,6 @@
     <string name="title_add_contact">add contact\n</string>
     <string name="title_settings">settings\n</string>
     <string name="title_edit_profile">edit profile\n</string>
+    <string name="title_about">About</string>
+
 </resources>

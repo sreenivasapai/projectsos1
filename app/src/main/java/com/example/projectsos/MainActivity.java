@@ -7,18 +7,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,18 +30,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -56,18 +43,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private NavigationView navigationView;
 
+    private CountDownTimer sosTimer; // Countdown timer
+    private boolean isTimerRunning = false; // Timer state tracker
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ImageButton menuButton = findViewById(R.id.menu_button);
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-        });
+        menuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -77,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ImageButton sosButton = findViewById(R.id.sos_button);
         ImageButton sosButton2 = findViewById(R.id.sos_button2);
+        TextView timerText = findViewById(R.id.timer_text); // TextView to display the countdown timer
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this,
@@ -88,40 +74,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // Set the NavigationView's item selected listener
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Set the first button's functionality to contact all numbers in phoneNumbers
         if (sosButton != null) {
-            sosButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    performSOSActionAllContacts();
-                }
-            });
+            sosButton.setOnClickListener(v -> handleSOSButtonClick(timerText, this::performSOSActionAllContacts));
         }
 
-        // Set the second button's functionality to contact only the emergency contact
         if (sosButton2 != null) {
-            sosButton2.setOnClickListener(new View.OnClickListener() {
+            sosButton2.setOnClickListener(v -> handleSOSButtonClick(timerText, this::performSOSActionSingleContact));
+        }
+    }
+
+    private void handleSOSButtonClick(TextView timerText, Runnable action) {
+        if (isTimerRunning) {
+            sosTimer.cancel();
+            timerText.setVisibility(View.GONE);
+            isTimerRunning = false;
+            Toast.makeText(this, "SOS action canceled", Toast.LENGTH_SHORT).show();
+        } else {
+            timerText.setVisibility(View.VISIBLE);
+
+            sosTimer = new CountDownTimer(10000, 1000) {
                 @Override
-                public void onClick(View v) {
-                    performSOSActionSingleContact();
+                public void onTick(long millisUntilFinished) {
+                    timerText.setText("SOS in " + (millisUntilFinished / 1000) + " seconds");
                 }
-            });
+
+                @Override
+                public void onFinish() {
+                    timerText.setVisibility(View.GONE);
+                    isTimerRunning = false;
+                    action.run();
+                }
+            };
+            isTimerRunning = true;
+            sosTimer.start();
         }
     }
 
     private void performSOSActionAllContacts() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_CALL_PERMISSION);
-        } else {
-            // Permissions granted, perform actions
+        if (checkAndRequestPermissions()) {
             sendSMSToAllContacts();
             makeRepetitiveCalls();
             shareLocationWithAllContacts();
@@ -129,31 +121,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void performSOSActionSingleContact() {
-        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_LOCATION_PERMISSION);
-        } else {
-            // Permissions granted, perform actions
+        if (checkAndRequestPermissions()) {
             sendSMSToSingleContact();
             shareLocationWithSingleContact();
         }
     }
 
+    private boolean checkAndRequestPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CALL_PERMISSION);
+            return false;
+        }
+        return true;
+    }
+
     private void sendSMSToAllContacts() {
-        SmsManager smsManager = SmsManager.getDefault();
         for (String phoneNumber : phoneNumbers) {
+            SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNumber, null, message, null, null);
         }
-        Toast.makeText(this, "SOS SMS sent to all contacts", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "SOS message sent to all contacts", Toast.LENGTH_SHORT).show();
     }
 
     private void sendSMSToSingleContact() {
         SmsManager smsManager = SmsManager.getDefault();
         smsManager.sendTextMessage(emergencyContact, null, message, null, null);
-        Toast.makeText(this, "SOS SMS sent to emergency contact", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "SOS message sent to the emergency contact", Toast.LENGTH_SHORT).show();
     }
 
     private void makeRepetitiveCalls() {
@@ -162,12 +160,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             callIntent.setData(Uri.parse("tel:" + phoneNumber));
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                 startActivity(callIntent);
-                Toast.makeText(this, "Calling " + phoneNumber, Toast.LENGTH_SHORT).show();
-                try {
-                    Thread.sleep(2000); // Delay for 2 seconds
-                } catch (InterruptedException e) {
-                    Log.e("MainActivity", "Error in call delay: " + e.getMessage());
-                }
             }
         }
     }
@@ -176,80 +168,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            String locationMessage = "My current location: https://www.google.com/maps/search/?api=1&query=" +
-                                    location.getLatitude() + "," + location.getLongitude();
-                            SmsManager smsManager = SmsManager.getDefault();
-                            for (String phoneNumber : phoneNumbers) {
-                                smsManager.sendTextMessage(phoneNumber, null, message + "\n" + locationMessage, null, null);
-                            }
-                            Toast.makeText(MainActivity.this, "Location shared with all contacts", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Unable to get location.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                String locationMessage = message + "\nLocation: https://maps.google.com/?q=" + location.getLatitude() + "," + location.getLongitude();
+                for (String phoneNumber : phoneNumbers) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(phoneNumber, null, locationMessage, null, null);
+                }
+            }
+        });
     }
 
     private void shareLocationWithSingleContact() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            String locationMessage = "My current location: https://www.google.com/maps/search/?api=1&query=" +
-                                    location.getLatitude() + "," + location.getLongitude();
-                            SmsManager smsManager = SmsManager.getDefault();
-                            smsManager.sendTextMessage(emergencyContact, null, message + "\n" + locationMessage, null, null);
-                            Toast.makeText(MainActivity.this, "Location shared with emergency contact", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Unable to get location.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CALL_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                performSOSActionAllContacts();
-            } else {
-                Toast.makeText(this, "Permission denied for calls or SMS", Toast.LENGTH_SHORT).show();
+        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                String locationMessage = message + "\nLocation: https://maps.google.com/?q=" + location.getLatitude() + "," + location.getLongitude();
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(emergencyContact, null, locationMessage, null, null);
             }
-        } else if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                performSOSActionSingleContact();
-            } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
+        });
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.home) {
-            // Handle item 1 click
-        } else if (id == R.id.add_contact) {
-            // Handle item 2 click
-        } else if (id == R.id.about) {
-            // Handle item 3 click
-        }
-
-        // Close the drawer
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

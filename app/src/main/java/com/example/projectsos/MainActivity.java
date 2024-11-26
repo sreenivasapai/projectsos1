@@ -31,8 +31,17 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
-
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -231,29 +240,98 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.add_contact) {
-            Intent intent = new Intent(this, AddContactActivity.class);
+        if (id == R.id.home) {
+            // Handle item 1 click
+        } else if (id == R.id.add_contact) {
+            // Handle item 2 click
+        } else if (id == R.id.edit_profile) {
+            // Navigate to Edit Profile page
+            Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
             startActivity(intent);
-            return true; // Indicate that the item was handled
-        }
-        if (id==R.id.edit_profile){
-            Intent intent = new Intent(this, EditProfileActivity.class);
-            startActivity(intent);
-            return true;
         }
 
-        // ... other navigation items ...
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+}
+
+// Add your EditProfileActivity below this
+
+class EditProfileActivity extends AppCompatActivity {
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+
+    private ImageView avatarImageView;
+    private EditText nameEditText, emailEditText, phoneEditText;
+    private Button saveButton;
+    private Uri imageUri;
+
     @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_profile);
+
+        avatarImageView = findViewById(R.id.avatar_image_view);
+        emailEditText = findViewById(R.id.emailEditText);
+        phoneEditText = findViewById(R.id.phoneEditText);
+        saveButton = findViewById(R.id.saveButton);
+
+        // Click listener for avatar to select a new image
+        avatarImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
+            }
+        });
+
+        // Click listener for save button
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveProfileDetails();
+            }
+        });
+    }
+
+    // Opens the gallery to select an image
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageUri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                avatarImageView.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
+            }
         }
+    }
+
+    // Save profile details
+    private void saveProfileDetails() {
+        String name = nameEditText.getText().toString().trim();
+        String email = emailEditText.getText().toString().trim();
+        String phone = phoneEditText.getText().toString().trim();
+
+        if (name.isEmpty() || email.isEmpty() || phone.isEmpty()) {
+            Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Logic to save the updated details (e.g., save to database, shared preferences, etc.)
+        // For now, just display a confirmation message
+        Toast.makeText(this, "Profile details saved successfully", Toast.LENGTH_SHORT).show();
+
+        // Go back to the MainActivity
+        Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

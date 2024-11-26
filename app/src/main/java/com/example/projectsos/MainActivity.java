@@ -243,7 +243,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.home) {
             // Handle item 1 click
         } else if (id == R.id.add_contact) {
-            // Handle item 2 click
+            Intent intent = new Intent(MainActivity.this, AddContactActivity.class);
+            startActivity(intent);
         } else if (id == R.id.edit_profile) {
             // Navigate to Edit Profile page
             Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
@@ -255,83 +256,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 }
 
-// Add your EditProfileActivity below this
 
-class EditProfileActivity extends AppCompatActivity {
 
-    private static final int PICK_IMAGE_REQUEST = 1;
 
-    private ImageView avatarImageView;
-    private EditText nameEditText, emailEditText, phoneEditText;
-    private Button saveButton;
-    private Uri imageUri;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
-
-        avatarImageView = findViewById(R.id.avatar_image_view);
-        emailEditText = findViewById(R.id.emailEditText);
-        phoneEditText = findViewById(R.id.phoneEditText);
-        saveButton = findViewById(R.id.saveButton);
-
-        // Click listener for avatar to select a new image
-        avatarImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-            }
-        });
-
-        // Click listener for save button
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveProfileDetails();
-            }
-        });
-    }
-
-    // Opens the gallery to select an image
-    private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                avatarImageView.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    // Save profile details
-    private void saveProfileDetails() {
-        String name = nameEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
-        String phone = phoneEditText.getText().toString().trim();
-
-        if (name.isEmpty() || email.isEmpty() || phone.isEmpty()) {
-            Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Logic to save the updated details (e.g., save to database, shared preferences, etc.)
-        // For now, just display a confirmation message
-        Toast.makeText(this, "Profile details saved successfully", Toast.LENGTH_SHORT).show();
-
-        // Go back to the MainActivity
-        Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-}

@@ -9,7 +9,7 @@
         <item
             android:id="@+id/home"
             android:title="@string/title_home"
-            android:checked="true" />
+            android:checked="true"/>
 
         <!-- Add Contact Item -->
         <item
@@ -26,11 +26,13 @@
             android:id="@+id/edit_profile"
             android:title="@string/title_edit_profile" />
 
-        <!-- About Item -->
-        <item
-            android:id="@+id/about"
-            android:title="@string/title_about" />
 
     </group>
+
+    ImageButton editButton = findViewById(R.id.edit_button);
+    editButton.setOnClickListener(v -> {
+    Intent intent = new Intent(MainActivity.this, EditProfileActivity.class);
+    startActivity(intent);
+    });
 
 </menu>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -14,7 +15,6 @@
         android:layout_marginBottom="16dp" />
 
 
-
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
@@ -23,8 +23,9 @@
         android:layout_marginTop="16dp"
         android:hint="Enter Email"
         android:inputType="textEmailAddress"
+        android:padding="8dp"
         android:textSize="16sp"
-        android:padding="8dp" />
+        tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/phoneEditText"
@@ -34,8 +35,9 @@
         android:layout_marginTop="16dp"
         android:hint="Enter Phone Number"
         android:inputType="phone"
-        android:textSize="16sp"
-        android:padding="8dp" />
+        android:minHeight="48dp"
+        android:padding="8dp"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/saveButton"

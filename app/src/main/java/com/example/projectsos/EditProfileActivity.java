@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class EditProfileActivity extends AppCompatActivity {
 
+    private EditText nameEditText;
     private EditText emailEditText;
     private EditText phoneEditText;
     private Button saveButton;
@@ -17,31 +18,36 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile); // Corrected layout file name
+        setContentView(R.layout.activity_edit_profile);
 
-        emailEditText = findViewById(R.id.emailEditText);
-        phoneEditText = findViewById(R.id.phoneEditText);
-        saveButton = findViewById(R.id.saveButton);
+        // Initialize UI elements
+        nameEditText = findViewById(R.id.name_edit_text);
+        emailEditText = findViewById(R.id.email_edit_text);
+        phoneEditText = findViewById(R.id.phone_edit_text);
+        saveButton = findViewById(R.id.save_button);
 
+        // Set click listener for the save button
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveProfile();
+                saveProfileData();
             }
         });
     }
 
-    private void saveProfile() {
+    private void saveProfileData() {
+        // Get the data from the EditTexts
+        String name = nameEditText.getText().toString();
         String email = emailEditText.getText().toString();
         String phone = phoneEditText.getText().toString();
 
-        // Perform validation if needed
+        // TODO: Implement your logic to save the profile data
+        // You can use SharedPreferences, a database, or any other method
 
-        // Store profile details (e.g., in SharedPreferences)
-        // ... (Implementation for storing profile details) ...
+        // Display a toast message to confirm the save
+        Toast.makeText(this, "Profile saved!", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(this, "Profile saved successfully", Toast.LENGTH_SHORT).show();
-        // You might want to finish the activity or navigate back here
+        // Optional: Finish the activity or navigate back
         // finish();
     }
 }

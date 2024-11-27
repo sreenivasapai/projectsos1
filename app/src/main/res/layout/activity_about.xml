@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_sos_alert_application"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:paddingBottom="16dp" />
+
+        <!-- Content -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_to_the_sos_alert_app_your_personal_safety_companion_n_nwith_a_single_press_of_the_sos_button_notify_your_emergency_contacts_and_nearby_emergency_services_in_seconds"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/features_n_one_tap_sos_alert_notifications_and_calls_n_customizable_contact_list_and_sos_button_styles_n_multi_language_support_for_a_global_audience_n_dark_and_light_theme_customization_n_a_10_second_countdown_to_cancel_accidental_alerts"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/how_to_use_n1_set_up_your_emergency_contacts_in_the_settings_page_n2_press_the_sos_button_in_an_emergency_n3_use_the_10_second_timer_to_cancel_if_needed"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/contact_us_nemail_support_example_com_nphone_123_456_7890"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/version_1_0_0_nprivacy_policy_your_data_is_secure_read_our_full_policy_here"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            android:paddingBottom="16dp" />
+
+    </LinearLayout>
+</ScrollView>

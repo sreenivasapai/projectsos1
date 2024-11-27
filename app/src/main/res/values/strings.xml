@@ -12,4 +12,15 @@
     <string name="title_settings">settings\n</string>
     <string name="title_edit_profile">edit profile\n</string>
     <string name="menu_add_contact">menu_add_contact\n</string>
+    <string name="theme">Theme</string>
+ <string name="dark_mode">Dark Mode</string>
+ <string name="customize_sos_button">Customize SOS Button</string>
+ <string name="restore_defaults">Restore Defaults</string>
+    <string name="about_sos_alert_application">About SOS Alert Application</string>
+ <string name="welcome_to_the_sos_alert_app_your_personal_safety_companion_n_nwith_a_single_press_of_the_sos_button_notify_your_emergency_contacts_and_nearby_emergency_services_in_seconds">Welcome to the SOS Alert App - your personal safety companion!\n\nWith a single press of the SOS button, notify your emergency contacts and nearby emergency services in seconds.</string>
+ <string name="features_n_one_tap_sos_alert_notifications_and_calls_n_customizable_contact_list_and_sos_button_styles_n_multi_language_support_for_a_global_audience_n_dark_and_light_theme_customization_n_a_10_second_countdown_to_cancel_accidental_alerts">Features:\n- One-tap SOS alert notifications and calls.\n- Customizable contact list and SOS button styles.\n- Multi-language support for a global audience.\n- Dark and light theme customization.\n- A 10-second countdown to cancel accidental alerts.</string>
+ <string name="how_to_use_n1_set_up_your_emergency_contacts_in_the_settings_page_n2_press_the_sos_button_in_an_emergency_n3_use_the_10_second_timer_to_cancel_if_needed">How to Use:\n1. Set up your emergency contacts in the Settings page.\n2. Press the SOS button in an emergency.\n3. Use the 10-second timer to cancel if needed.</string>
+ <string name="contact_us_nemail_support_example_com_nphone_123_456_7890">Contact Us:\nEmail: support@example.com\nPhone: +123-456-7890</string>
+ <string name="version_1_0_0_nprivacy_policy_your_data_is_secure_read_our_full_policy_here">Version: 1.0.0\nPrivacy Policy: Your data is secure. Read our full policy [here].</string>
+ <string name="about">about\n</string>
 </resources>

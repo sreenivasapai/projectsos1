@@ -51,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
                     // Save login status and user details in SharedPreferences
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("is_logged_in", true);
-                    editor.putString("username", username);
-                    editor.putString("email", email);
+                    editor.putString("username", username);  // Save username
+                    editor.putString("email", email);        // Save email
                     editor.apply();  // Apply changes
 
                     // Redirect to MainActivity

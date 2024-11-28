@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +30,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int REQUEST_CALL_PERMISSION = 2;
@@ -44,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean isTimerRunning = false;
 
     private ContactDao contactDao;
+
+    private TextView navUsername;
+    private TextView navEmail;
+    private ImageView navProfileImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +92,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Menu Button click action
             menuButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
+            // Retrieve user details and set them in the navigation header
+            View headerView = navigationView.getHeaderView(0);
+            navUsername = headerView.findViewById(R.id.nav_username);
+            navEmail = headerView.findViewById(R.id.nav_email);
+
+
+            loadProfileData();
+
             // SOS Button actions
             sosButton.setOnClickListener(v -> handleSOSButtonClick(timerText, this::performSOSActionAllContacts));
             sosButton2.setOnClickListener(v -> handleSOSButtonClick(timerText, this::performSOSActionSingleContactWithDelay));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload profile data when the activity resumes
+        loadProfileData();
+    }
+
+    // Method to load profile data from SharedPreferences and update the navigation header
+    private void loadProfileData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        String username = sharedPreferences.getString("username", "User Name");
+        String email = sharedPreferences.getString("email", "user@example.com");
+        String profileImageUri = sharedPreferences.getString("profile_image_uri", null);
+
+        // Update navigation header with the new data
+        navUsername.setText(username);
+        navEmail.setText(email);
+
+        // Update profile image if available
+        if (profileImageUri != null) {
+            navProfileImage.setImageURI(Uri.parse(profileImageUri));
         }
     }
 
@@ -122,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    // Action for sending SOS to all contacts with 7 seconds delay between each contact
     private void performSOSActionAllContacts() {
         contactDao.getAllContacts().observe(this, contacts -> {
             if (contacts != null && !contacts.isEmpty()) {
@@ -163,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    // Fetch the current location and share it with a single contact
     private void shareLocationWithSingleContact(String phoneNumber) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -225,18 +258,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-    }
-
-    private boolean checkAndRequestPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE, Manifest.permission.SEND_SMS, Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_CALL_PERMISSION);
-            return false;
-        }
-        return true;
     }
 }

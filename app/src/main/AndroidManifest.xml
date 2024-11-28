@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Telephony feature, not required for all devices -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
@@ -28,6 +30,17 @@
             android:name=".AboutActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
+        <activity android:name=".SavedContactsActivity" />
+        <activity android:name=".LoginActivity"
+            android:exported="true">
+            <!-- Optionally, you can make LoginActivity the launcher activity if needed -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
 
         <activity
             android:name=".AddContactActivity"
@@ -46,7 +59,8 @@
     </application>
 
     <!-- Permissions required by the app -->
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.CALL_PHONE"
+        tools:ignore="ManifestOrder" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -54,8 +68,13 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <!-- Feature declarations, optional for devices without these components -->
     <uses-feature android:name="android.hardware.camera" android:required="false" />

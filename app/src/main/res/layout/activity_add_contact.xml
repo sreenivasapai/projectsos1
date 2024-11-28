@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Input Fields for Adding Contact -->
     <EditText
         android:id="@+id/nameEditText"
         android:layout_width="match_parent"
@@ -19,11 +20,21 @@
         android:hint="Phone Number"
         android:inputType="phone" />
 
+    <!-- Button to Add a Contact -->
     <Button
         android:id="@+id/addContactButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Add Contact" />
+
+    <!-- Button to View Saved Contacts -->
+    <Button
+        android:id="@+id/viewSavedContactsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Saved Contacts" />
+
 
 </LinearLayout>
